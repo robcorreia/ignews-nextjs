@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 
-import { GetServerSideProps } from 'next'; 
+import { GetStaticProps } from 'next'; 
 
 import Head from 'next/head'
 import { SubscribeButton } from '../components/SubscribeButton';
@@ -40,7 +40,9 @@ export default function Home({ product }: IHomeProps ) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+
+//SSG: Static site generation = usar somente quando páginas que podem ser estáticas
+export const getStaticProps: GetStaticProps = async () => {
   const price = await stripe.prices.retrieve('price_1JKR2iATnDcf6i9Dmvh6QabX');
 
   const product = {
@@ -53,6 +55,8 @@ export const getServerSideProps: GetServerSideProps = async () => {
   return {
     props: {
       product
-    }
+    },
+    //revalidate serve para setar um tempo que deverá ser revalidada/gerada essa pagina
+    revalidate: 60 * 60 * 24, //24 horas
   }
 }
